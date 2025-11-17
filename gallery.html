@@ -21,7 +21,7 @@
     <a href="message.html">Pesan</a>
   </nav>
 
-  <!-- Animasi stars -->
+  <!-- STAR ANIMATION -->
   <div class="star-container">
     <div class="star" style="left:8%;animation-duration:6s;"></div>
     <div class="star" style="left:22%;animation-duration:7s;animation-delay:.5s;"></div>
@@ -38,46 +38,45 @@
 
   <!-- AUDIO CONTROL -->
   <div class="audio-control">
-    <button id="playBtn">Play Music</button>
-    <button id="pauseBtn" style="display:none;">Pause</button>
+    <button id="playBtn">▶ Play Music</button>
+    <button id="pauseBtn" style="display:none;">⏸ Pause</button>
   </div>
 
   <script type="module">
     import { subscribeToGallery } from "./supabase.js";
 
-    /* ========================
-       MUSIC CONTROL
-    =========================== */
+    /* ====================== MUSIC GESTURE CONTROL ====================== */
     const bgm = document.getElementById("bgm");
     const playBtn = document.getElementById("playBtn");
     const pauseBtn = document.getElementById("pauseBtn");
+    let musicOn = false;
 
-    window.addEventListener("load", async () => {
-      try {
-        await bgm.play();
-        playBtn.style.display = "none";
-        pauseBtn.style.display = "inline-block";
-      } catch {
-        playBtn.style.display = "inline-block";
+    function startMusic() {
+      if (!musicOn) {
+        bgm.play().then(() => {
+          musicOn = true;
+          playBtn.style.display = "none";
+          pauseBtn.style.display = "inline-block";
+        }).catch(err => console.log("Music blocked:", err));
       }
-    });
+    }
 
-    playBtn.onclick = async () => {
-      await bgm.play();
-      playBtn.style.display="none";
-      pauseBtn.style.display="inline-block";
-    };
+    // Gesture listeners
+    document.addEventListener("click", startMusic, { once:true });
+    document.addEventListener("touchstart", startMusic, { once:true });
+    document.addEventListener("scroll", startMusic, { once:true });
 
+    // Button controls
+    playBtn.onclick = startMusic;
     pauseBtn.onclick = () => {
       bgm.pause();
-      pauseBtn.style.display="none";
-      playBtn.style.display="inline-block";
+      musicOn = false;
+      pauseBtn.style.display = "none";
+      playBtn.style.display = "inline-block";
     };
 
 
-    /* ========================
-       RENDER GALLERY (IMG + VIDEO)
-    =========================== */
+    /* ====================== GALLERY RENDER (IMAGE + VIDEO) ====================== */
     const galleryEl = document.getElementById("gallery");
 
     function render(images) {
@@ -92,7 +91,6 @@
         const url = item.url.toLowerCase();
         let element;
 
-        // Detect video type
         if (url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith(".mov")) {
           element = document.createElement("video");
           element.src = item.url;
@@ -102,9 +100,7 @@
           element.classList.add("video-post");
           element.style.width = "260px";
           element.style.borderRadius = "16px";
-        } 
-        // Otherwise treat as image
-        else {
+        } else {
           element = document.createElement("img");
           element.src = item.url;
           element.alt = item.name || "moment";
@@ -116,17 +112,13 @@
       enableSmartVideoAutoplay();
     }
 
-
-    /* ========================
-       TIKTOK STYLE AUTOPLAY
-    =========================== */
+    /* ====================== VISIBILITY-BASED VIDEO AUTOPLAY ====================== */
     function enableSmartVideoAutoplay() {
       const videos = document.querySelectorAll(".video-post");
 
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.play();
-          else entry.target.pause();
+          entry.isIntersecting ? entry.target.play() : entry.target.pause();
         });
       }, { threshold: 0.6 });
 
