@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Special Message 💙</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* ============= MESSAGE BOX ============= */
+    .msg-box {
+      max-width: 720px;
+      margin: 20px auto;
+      text-align: center;
+    }
+    .romantic-text {
+      margin-top: 18px;
+      padding: 16px;
+      font-size: 20px;
+      line-height: 1.7;
+      color: #dff8ff;
+      text-shadow: 0 0 6px rgba(0,234,255,0.25);
+      min-height: 120px;
+      white-space: pre-line;
+      font-family: "Poppins";
+      animation: fadeIn .5s ease-out;
+    }
+    .msg-buttons {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+    .msg-buttons button {
+      background: #00eaff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      color: #001021;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00eaff;
+      transition: .2s;
+    }
+    .msg-buttons button:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 18px #00eaff;
+    }
+
+    /* ============= HEART FLOAT ============= */
+    @keyframes floatHearts {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to   { transform: translateY(-120px) scale(1.6); opacity: 0; }
+    }
+    .heart {
+      position: fixed;
+      bottom: 20px;
+      font-size: 24px;
+      animation: floatHearts 1.5s linear forwards;
+      pointer-events: none;
+    }
+
+    /* ============= SECRET FLOWER MODE ============= */
+    @keyframes falling {
+      from { transform: translateY(-10vh); opacity: 1; }
+      to   { transform: translateY(110vh); opacity: 0; }
+    }
+    .flower {
+      position: fixed;
+      top: -20px;
+      font-size: 26px;
+      pointer-events: none;
+      animation: falling linear forwards;
+    }
+
+    /* ============= MYSTERIOUS TEXT FLOAT ============= */
+    .mysterious-text,
+    .fog-text {
+      position: fixed;
+      top: 50%;
+      width: 100%;
+      text-align: center;
+      font-size: 26px;
+      color: #c7ebff;
+      text-shadow: 0 0 12px #00eaff;
+      opacity: 0;
+      animation: fadeInOut 6s ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes fadeInOut {
+      0%   { opacity: 0; transform: scale(.9); }
+      15%  { opacity: 1; transform: scale(1); }
+      85%  { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(.9); }
+    }
+
+    /* =========== FOG EFFECT =========== */
+    .fog {
+      position: fixed;
+      inset: 0;
+      background: url('https://png.pngtree.com/png-vector/20220608/ourmid/pngtree-vintage-smoke-element-illustration-png-image_4866059.png');
+      background-size: cover;
+      opacity: 0;
+      filter: blur(2px);
+      animation: fogFade 12s ease-in-out forwards;
+      pointer-events: none;
+    }
+    @keyframes fogFade {
+      0% { opacity: 0; }
+      30% { opacity: 0.7; }
+      80% { opacity: 0.7; }
+      100% { opacity: 0; }
+    }
+  </style>
+</head>
+
+<body class="message-page">
+
+  <!-- MUSIC -->
+  <audio id="bgm" loop>
+    <source src="song4.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="upload.html">Upload</a>
+    <a href="message.html" class="active">Pesan</a>
+  </nav>
+
+  <h2 class="neon-title">Pesan Untukmu 💙</h2>
+
+  <div class="msg-box">
+    <div id="messageArea" class="romantic-text">Klik salah satu tombol di bawah ini 💌</div>
+
+    <div class="msg-buttons">
+      <button onclick="showMsg(1)">💙</button>
+      <button onclick="showMsg(2)">🌙</button>
+      <button onclick="showMsg(3)">💌</button>
+      <button onclick="showMsg(4)">💫</button>
+      <button onclick="showMsg(5)">🎁</button>
+    </div>
+  </div>
+
+  <div class="audio-control">
+    <button id="playBtn">Play Music</button>
+    <button id="pauseBtn" style="display:none;">Pause</button>
+  </div>
+
+<script>
+/* ======================= MUSIC ======================= */
+const bgm = document.getElementById("bgm");
+const playBtn = document.getElementById("playBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+
+window.addEventListener("load", async () => {
+  try { await bgm.play(); playBtn.style.display="none"; pauseBtn.style.display="inline-block"; }
+  catch { playBtn.style.display="inline-block"; }
+});
+playBtn.onclick = async () => { await bgm.play(); playBtn.style.display="none"; pauseBtn.style.display="inline-block"; }
+pauseBtn.onclick = () => { bgm.pause(); pauseBtn.style.display="none"; playBtn.style.display="inline-block"; }
+
+/* ======================= BUTTON MESSAGES ======================= */
+const messageArea = document.getElementById("messageArea");
+const messages = {
+  1: "Aku bersyukur bisa mengenalmu... kamu adalah hadiah yang Tuhan kirim untuk membuat hidupku lebih hangat 💙",
+  2: "Kalau malam tiba, kamu adalah alasanku tersenyum sebelum tidur 🌙",
+  3: "Hatiku punya banyak cerita, tapi bagian favoritnya adalah saat ada kamu di dalamnya 💌",
+  4: "Kamu tahu? Aku tidak pernah minta apa pun, tapi Tuhan mengirimmu dan itu lebih dari cukup 💫",
+  5: "Janji ya... tetap jadi kamu yang manis, kuat, dan lembut — aku bangga sama kamu 🎁"
+};
+function showMsg(type) {
+  messageArea.innerText = messages[type];
+  spawnHearts();
+}
+function spawnHearts() {
+  for (let i = 0; i < 6; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💙";
+    heart.style.left = (Math.random()*90 + 5) + "vw";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1500);
+  }
+}
+
+/* ==========================================================
+   🔥 NEW EVENT (2 MINUTES) — FOG + 1 SHOCK MESSAGE (ONLY ONCE)
+   ========================================================== */
+setTimeout(triggerFogMystery, 120000); // 2 minutes
+
+function triggerFogMystery() {
+  // fog effect
+  const fog = document.createElement("div");
+  fog.className = "fog";
+  document.body.appendChild(fog);
+  setTimeout(() => fog.remove(), 12000);
+
+  // mysterious text once
+  const fogMsg = document.createElement("div");
+  fogMsg.className = "fog-text";
+  fogMsg.innerText = randomFogMessage();
+  document.body.appendChild(fogMsg);
+  setTimeout(() => fogMsg.remove(), 6000);
+}
+
+function randomFogMessage() {
+  const arr = [
+    "Tidak semua yang terasa jauh... benar-benar pergi.",
+    "Beberapa perasaan hanya diam... tapi tidak hilang.",
+    "Waktu bisa berjalan... tapi hati menyimpan semuanya.",
+    "Ada bagian dari dirimu yang disimpan takdir, bukan lupa."
+  ];
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+/* ==========================================================
+   🔥 EXISTING SECRET MODE (5 MINUTES) — FLOWERS & MESSAGES
+   ========================================================== */
+setTimeout(triggerSecretMode, 300000); // existing 5 minute event
+
+function triggerSecretMode() {
+  // falling flowers
+  setInterval(() => {
+    const f = document.createElement("div");
+    f.className = "flower";
+    f.innerHTML = "🌸";
+    f.style.left = Math.random()*100 + "vw";
+    f.style.animationDuration = (Math.random()*2 + 4) + "s";
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(), 7000);
+  }, 550);
+
+  // mysterious lines shown only 5 times
+  let count = 0, max = 5;
+  const interval = setInterval(() => {
+    if(count >= max) { clearInterval(interval); return; }
+    createMysteriousText();
+    count++;
+  }, 6500);
+}
+
+function createMysteriousText() {
+  const t = document.createElement("div");
+  t.className = "mysterious-text";
+  t.innerText = getMysteryLine();
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 6000);
+}
+
+function getMysteryLine() {
+  const lines = [
+    "Apakah semua ini kebetulan... atau takdir?",
+    "Jika kamu sampai pada titik ini, kamu spesial.",
+    "Beberapa rasa hanya bisa dirasakan, bukan dijelaskan.",
+    "Ada hal-hal yang hanya dimengerti hati, bukan kata-kata.",
+    "Tidak semua pertemuan adalah singgah... beberapa adalah takdir."
+  ];
+  return lines[Math.floor(Math.random()*lines.length)];
+}
+</script>
+
+</body>
+</html>

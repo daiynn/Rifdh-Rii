@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday — Surprise</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* Text aesthetic pojok kiri */
+    .corner-brand {
+      position: fixed;
+      top: 10px;
+      left: 14px;
+      z-index: 999;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      color: #9cd6ff;
+      letter-spacing: 1px;
+      text-shadow:
+        0 0 6px #9cd6ff,
+        0 0 14px #72d1ff,
+        0 0 22px #37baff;
+      animation: brandPulse 2.7s ease-in-out infinite;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @keyframes brandPulse {
+      0%,100% {
+        opacity: .92;
+        transform: scale(1);
+        text-shadow:
+          0 0 6px #9cd6ff,
+          0 0 14px #72d1ff,
+          0 0 22px #37baff;
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.07);
+        text-shadow:
+          0 0 10px #c3ecff,
+          0 0 22px #8cdfff,
+          0 0 36px #4ecafe;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ☆ Corner Aesthetic Text -->
+  <div class="corner-brand">chisa & rii</div>
+
+  <!-- MUSIC -->
+  <audio id="bgm" loop>
+    <source src="song3.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="upload.html">Upload</a>
+    <a href="message.html">Pesan</a>
+  </nav>
+
+  <!-- STAR ANIMATION BG -->
+  <div class="star-container">
+    <div class="star" style="left:6%; animation-duration:6s;"></div>
+    <div class="star" style="left:18%; animation-duration:7.2s; animation-delay:0.7s;"></div>
+    <div class="star" style="left:32%; animation-duration:5.6s; animation-delay:0.2s;"></div>
+    <div class="star" style="left:46%; animation-duration:8s; animation-delay:1.2s;"></div>
+    <div class="star" style="left:60%; animation-duration:6.8s; animation-delay:0.4s;"></div>
+    <div class="star" style="left:74%; animation-duration:7.6s; animation-delay:1.0s;"></div>
+    <div class="star" style="left:88%; animation-duration:5.4s; animation-delay:0.6s;"></div>
+  </div>
+
+  <h1 class="neon-title">18 ✨</h1>
+
+  <section style="text-align:center; margin-top: 18px;">
+    <p style="max-width:720px; margin: auto; font-size:18px; color:#cfeaff;">
+      Ini hadiah kecil dari aku — halaman penuh kenangan.  
+      Klik <b>Gallery</b> untuk lihat foto-foto kita, atau <b>Upload</b> kalau kamu mau tambahkan foto/video baru.
+    </p>
+  </section>
+
+  <!-- AUDIO CONTROL -->
+  <div class="audio-control" aria-hidden="false">
+    <button id="playBtn">Play Music</button>
+    <button id="pauseBtn" style="display:none;">Pause</button>
+  </div>
+
+  <script>
+    const bgm = document.getElementById('bgm');
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+
+    window.addEventListener('load', async () => {
+      try { 
+        await bgm.play(); 
+        playBtn.style.display='none'; 
+        pauseBtn.style.display='inline-block'; 
+      } catch(e) { 
+        playBtn.style.display='inline-block'; 
+        pauseBtn.style.display='none'; 
+      }
+    });
+
+    playBtn.addEventListener('click', async () => {
+      await bgm.play();
+      playBtn.style.display='none'; 
+      pauseBtn.style.display='inline-block';
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      bgm.pause();
+      pauseBtn.style.display='none'; 
+      playBtn.style.display='inline-block';
+    });
+  </script>
+
+</body>
+</html>

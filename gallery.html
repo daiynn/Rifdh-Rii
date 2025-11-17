@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gallery — Moments</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- MUSIC -->
+  <audio id="bgm" loop>
+    <source src="song2.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="gallery.html" class="active">Gallery</a>
+    <a href="upload.html">Upload</a>
+    <a href="message.html">Pesan</a>
+  </nav>
+
+  <!-- Animasi stars -->
+  <div class="star-container">
+    <div class="star" style="left:8%;animation-duration:6s;"></div>
+    <div class="star" style="left:22%;animation-duration:7s;animation-delay:.5s;"></div>
+    <div class="star" style="left:38%;animation-duration:5.8s;animation-delay:.2s;"></div>
+    <div class="star" style="left:54%;animation-duration:7.8s;animation-delay:.8s;"></div>
+    <div class="star" style="left:72%;animation-duration:6.4s;animation-delay:.3s;"></div>
+    <div class="star" style="left:88%;animation-duration:7.5s;animation-delay:1s;"></div>
+  </div>
+
+  <h2 class="neon-title">Memories ✨</h2>
+
+  <!-- GALLERY -->
+  <div id="gallery" class="gallery"></div>
+
+  <!-- AUDIO CONTROL -->
+  <div class="audio-control">
+    <button id="playBtn">Play Music</button>
+    <button id="pauseBtn" style="display:none;">Pause</button>
+  </div>
+
+  <script type="module">
+    import { subscribeToGallery } from "./supabase.js";
+
+    /* ========================
+       MUSIC CONTROL
+    =========================== */
+    const bgm = document.getElementById("bgm");
+    const playBtn = document.getElementById("playBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+
+    window.addEventListener("load", async () => {
+      try {
+        await bgm.play();
+        playBtn.style.display = "none";
+        pauseBtn.style.display = "inline-block";
+      } catch {
+        playBtn.style.display = "inline-block";
+      }
+    });
+
+    playBtn.onclick = async () => {
+      await bgm.play();
+      playBtn.style.display="none";
+      pauseBtn.style.display="inline-block";
+    };
+
+    pauseBtn.onclick = () => {
+      bgm.pause();
+      pauseBtn.style.display="none";
+      playBtn.style.display="inline-block";
+    };
+
+
+    /* ========================
+       RENDER GALLERY (IMG + VIDEO)
+    =========================== */
+    const galleryEl = document.getElementById("gallery");
+
+    function render(images) {
+      galleryEl.innerHTML = "";
+
+      if (!images?.length) {
+        galleryEl.innerHTML = `<p style="color:#9cd6ff;text-align:center;margin-top:20px">Belum ada foto/video — upload dulu 💙</p>`;
+        return;
+      }
+
+      images.forEach(item => {
+        const url = item.url.toLowerCase();
+        let element;
+
+        // Detect video type
+        if (url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith(".mov")) {
+          element = document.createElement("video");
+          element.src = item.url;
+          element.muted = true;
+          element.playsInline = true;
+          element.loop = true;
+          element.classList.add("video-post");
+          element.style.width = "260px";
+          element.style.borderRadius = "16px";
+        } 
+        // Otherwise treat as image
+        else {
+          element = document.createElement("img");
+          element.src = item.url;
+          element.alt = item.name || "moment";
+        }
+
+        galleryEl.appendChild(element);
+      });
+
+      enableSmartVideoAutoplay();
+    }
+
+
+    /* ========================
+       TIKTOK STYLE AUTOPLAY
+    =========================== */
+    function enableSmartVideoAutoplay() {
+      const videos = document.querySelectorAll(".video-post");
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.play();
+          else entry.target.pause();
+        });
+      }, { threshold: 0.6 });
+
+      videos.forEach(v => observer.observe(v));
+    }
+
+    subscribeToGallery(render);
+  </script>
+
+</body>
+</html>
