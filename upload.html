@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload konten</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="upload-page">
+
+<!-- Background Music -->
+<audio id="bgm" loop>
+  <source src="songg.mp3" type="audio/mpeg">
+</audio>
+
+<!-- NAVIGATION -->
+<nav class="nav">
+  <a href="index.html">Home</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="upload.html">Upload</a>
+  <a href="message.html">Pesan</a>
+</nav>
+
+<!-- STAR ANIMATION BACKGROUND -->
+<div class="star-container">
+  <div class="star" style="left:6%; animation-duration:6s;"></div>
+  <div class="star" style="left:18%; animation-duration:7.2s; animation-delay:0.7s;"></div>
+  <div class="star" style="left:32%; animation-duration:5.6s; animation-delay:0.2s;"></div>
+  <div class="star" style="left:46%; animation-duration:8s; animation-delay:1.2s;"></div>
+  <div class="star" style="left:60%; animation-duration:6.8s; animation-delay:0.4s;"></div>
+  <div class="star" style="left:74%; animation-duration:7.6s; animation-delay:1.0s;"></div>
+  <div class="star" style="left:88%; animation-duration:5.4s; animation-delay:0.6s;"></div>
+</div>
+
+<h2 class="neon-title">Upload Moments 💙</h2>
+
+<!-- Upload Box -->
+<div class="upload-box">
+  <input type="file" id="fileInput">
+  <button id="uploadBtn">Upload</button>
+  <p class="status" id="status"></p>
+  
+  <!-- Progress Animation -->
+  <div id="loader" style="display:none; margin-top:12px; color:#9cd6ff; font-size:15px;">
+    ⏳ Sedang mengupload...
+  </div>
+</div>
+
+<!-- MUSIC CONTROL -->
+<div class="audio-control">
+  <button id="playBtn">Play Music</button>
+  <button id="pauseBtn" style="display:none;">Pause</button>
+</div>
+
+<!-- SCRIPT -->
+<script type="module">
+import { uploadPhoto } from "./supabase.js";
+
+const fileInput = document.getElementById("fileInput");
+const uploadBtn = document.getElementById("uploadBtn");
+const statusMsg = document.getElementById("status");
+const loader = document.getElementById("loader");
+
+// ===== MUSIC CONTROL =====
+const bgm = document.getElementById("bgm");
+const playBtn = document.getElementById("playBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+
+window.addEventListener("load", async () => {
+  try { 
+    await bgm.play(); 
+    playBtn.style.display = "none"; 
+    pauseBtn.style.display = "inline-block";
+  } catch {
+    playBtn.style.display = "inline-block";
+  }
+});
+
+playBtn.onclick = async () => {
+  await bgm.play();
+  playBtn.style.display = "none";
+  pauseBtn.style.display = "inline-block";
+};
+pauseBtn.onclick = () => {
+  bgm.pause();
+  pauseBtn.style.display = "none";
+  playBtn.style.display = "inline-block";
+};
+
+// ===== UPLOAD PROCESS =====
+uploadBtn.onclick = async () => {
+  const file = fileInput.files[0];
+
+  if (!file) {
+    statusMsg.textContent = "📂 Pilih file dulu ya 💙";
+    return;
+  }
+
+  // show loading animation
+  loader.style.display = "block";
+  statusMsg.textContent = "";
+
+  try {
+    await uploadPhoto(file);
+    loader.style.display = "none";
+    statusMsg.textContent = "✨ Berhasil upload! Cek di Gallery 💙";
+  } catch (err) {
+    loader.style.display = "none";
+    statusMsg.textContent = "❌ Upload gagal, cek console!";
+    console.error(err);
+  }
+};
+</script>
+
+</body>
+</html>
