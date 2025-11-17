@@ -9,7 +9,7 @@
 <body class="upload-page">
 
 <!-- Background Music -->
-<audio id="bgm" loop>
+audio id="bgm" loop>
   <source src="songg.mp3" type="audio/mpeg">
 </audio>
 
@@ -17,7 +17,7 @@
 <nav class="nav">
   <a href="index.html">Home</a>
   <a href="gallery.html">Gallery</a>
-  <a href="upload.html">Upload</a>
+  <a href="upload.html" class="active">Upload</a>
   <a href="message.html">Pesan</a>
 </nav>
 
@@ -48,8 +48,8 @@
 
 <!-- MUSIC CONTROL -->
 <div class="audio-control">
-  <button id="playBtn">Play Music</button>
-  <button id="pauseBtn" style="display:none;">Pause</button>
+  <button id="playBtn">▶ Play Music</button>
+  <button id="pauseBtn" style="display:none;">⏸ Pause</button>
 </div>
 
 <!-- SCRIPT -->
@@ -61,33 +61,35 @@ const uploadBtn = document.getElementById("uploadBtn");
 const statusMsg = document.getElementById("status");
 const loader = document.getElementById("loader");
 
-// ===== MUSIC CONTROL =====
+/* ===== SAFE MUSIC CONTROL (NO AUTOPLAY) ===== */
 const bgm = document.getElementById("bgm");
 const playBtn = document.getElementById("playBtn");
 const pauseBtn = document.getElementById("pauseBtn");
+let musicStarted = false;
 
-window.addEventListener("load", async () => {
-  try { 
-    await bgm.play(); 
-    playBtn.style.display = "none"; 
-    pauseBtn.style.display = "inline-block";
-  } catch {
-    playBtn.style.display = "inline-block";
+function startMusic() {
+  if (!musicStarted) {
+    bgm.play().then(() => {
+      musicStarted = true;
+      playBtn.style.display = "none";
+      pauseBtn.style.display = "inline-block";
+    }).catch(err => console.log("Play blocked:", err));
   }
-});
+}
 
-playBtn.onclick = async () => {
-  await bgm.play();
-  playBtn.style.display = "none";
-  pauseBtn.style.display = "inline-block";
-};
+document.addEventListener("click", startMusic, { once: true });
+document.addEventListener("touchstart", startMusic, { once: true });
+document.addEventListener("scroll", startMusic, { once: true });
+
+playBtn.onclick = startMusic;
 pauseBtn.onclick = () => {
   bgm.pause();
+  musicStarted = false;
   pauseBtn.style.display = "none";
   playBtn.style.display = "inline-block";
 };
 
-// ===== UPLOAD PROCESS =====
+/* ===== UPLOAD PROCESS ===== */
 uploadBtn.onclick = async () => {
   const file = fileInput.files[0];
 
@@ -96,14 +98,13 @@ uploadBtn.onclick = async () => {
     return;
   }
 
-  // show loading animation
   loader.style.display = "block";
   statusMsg.textContent = "";
 
   try {
     await uploadPhoto(file);
     loader.style.display = "none";
-    statusMsg.textContent = "✨ Berhasil upload! Cek di Gallery 💙";
+    statusMsg.textContent = "✨ Upload berhasil! Cek di Gallery 💙";
   } catch (err) {
     loader.style.display = "none";
     statusMsg.textContent = "❌ Upload gagal, cek console!";
