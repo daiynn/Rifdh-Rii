@@ -146,22 +146,41 @@
   </div>
 
   <div class="audio-control">
-    <button id="playBtn">Play Music</button>
-    <button id="pauseBtn" style="display:none;">Pause</button>
+    <button id="playBtn">▶ Play Music</button>
+    <button id="pauseBtn" style="display:none;">⏸ Pause</button>
   </div>
 
 <script>
-/* ======================= MUSIC ======================= */
+/* ======================= SAFE MUSIC PLAYER (NO AUTOPLAY) ======================= */
 const bgm = document.getElementById("bgm");
 const playBtn = document.getElementById("playBtn");
 const pauseBtn = document.getElementById("pauseBtn");
+let musicOn = false;
 
-window.addEventListener("load", async () => {
-  try { await bgm.play(); playBtn.style.display="none"; pauseBtn.style.display="inline-block"; }
-  catch { playBtn.style.display="inline-block"; }
-});
-playBtn.onclick = async () => { await bgm.play(); playBtn.style.display="none"; pauseBtn.style.display="inline-block"; }
-pauseBtn.onclick = () => { bgm.pause(); pauseBtn.style.display="none"; playBtn.style.display="inline-block"; }
+function startMusic() {
+  if (!musicOn) {
+    bgm.play().then(() => {
+      musicOn = true;
+      playBtn.style.display = "none";
+      pauseBtn.style.display = "inline-block";
+    }).catch(err => console.log("Blocked:", err));
+  }
+}
+
+// allow gesture trigger
+document.addEventListener("click", startMusic, { once:true });
+document.addEventListener("touchstart", startMusic, { once:true });
+document.addEventListener("scroll", startMusic, { once:true });
+
+// manual button
+playBtn.onclick = startMusic;
+pauseBtn.onclick = () => {
+  bgm.pause();
+  musicOn = false;
+  pauseBtn.style.display = "none";
+  playBtn.style.display = "inline-block";
+};
+
 
 /* ======================= BUTTON MESSAGES ======================= */
 const messageArea = document.getElementById("messageArea");
@@ -176,6 +195,7 @@ function showMsg(type) {
   messageArea.innerText = messages[type];
   spawnHearts();
 }
+
 function spawnHearts() {
   for (let i = 0; i < 6; i++) {
     const heart = document.createElement("div");
@@ -187,19 +207,18 @@ function spawnHearts() {
   }
 }
 
+
 /* ==========================================================
-   🔥 NEW EVENT (2 MINUTES) — FOG + 1 SHOCK MESSAGE (ONLY ONCE)
-   ========================================================== */
-setTimeout(triggerFogMystery, 120000); // 2 minutes
+   🔥 2-MINUTE EVENT — FOG + 1 MESSAGE
+========================================================== */
+setTimeout(triggerFogMystery, 120000);
 
 function triggerFogMystery() {
-  // fog effect
   const fog = document.createElement("div");
   fog.className = "fog";
   document.body.appendChild(fog);
   setTimeout(() => fog.remove(), 12000);
 
-  // mysterious text once
   const fogMsg = document.createElement("div");
   fogMsg.className = "fog-text";
   fogMsg.innerText = randomFogMessage();
@@ -217,13 +236,13 @@ function randomFogMessage() {
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
+
 /* ==========================================================
-   🔥 EXISTING SECRET MODE (5 MINUTES) — FLOWERS & MESSAGES
-   ========================================================== */
-setTimeout(triggerSecretMode, 300000); // existing 5 minute event
+   🔥 5-MINUTE EVENT — FLOWERS & MYSTERY LINES
+========================================================== */
+setTimeout(triggerSecretMode, 300000);
 
 function triggerSecretMode() {
-  // falling flowers
   setInterval(() => {
     const f = document.createElement("div");
     f.className = "flower";
@@ -234,10 +253,9 @@ function triggerSecretMode() {
     setTimeout(()=>f.remove(), 7000);
   }, 550);
 
-  // mysterious lines shown only 5 times
   let count = 0, max = 5;
   const interval = setInterval(() => {
-    if(count >= max) { clearInterval(interval); return; }
+    if(count >= max) return clearInterval(interval);
     createMysteriousText();
     count++;
   }, 6500);
